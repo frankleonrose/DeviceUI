@@ -3,7 +3,7 @@
   (:require [goog.dom :as gdom]
             [reagent.core :as r]
             [rc-slider]
-            [cljs.core.async :as a :refer [<! >!]]
+            [cljs.core.async :as a :refer [<! >! alts!]]
             [haslett.client :as ws]
             [haslett.format :as fmt]))
 
@@ -19,9 +19,15 @@
 
 (r/render [simple-component] (gdom/getElement "app"))
 
-(go (let [stream (<! (ws/connect "ws://0.0.0.0:4000"))]
-      (>! (:sink stream) "Hello World")
-      (js/console.log (str "From Arduino: " (<! (:source stream))))
+(go (let [stream (<! (ws/connect "ws://0.0.0.0:4000"))
+          close-chan (:close-status stream)
+          source-chan (:source stream)]
+      (>! (:sink stream) "{\"op\":\"init\"}")
+      (loop []
+        (let [[val port] (alts! [source-chan close-chan])]
+          (when (= port source-chan)
+            (js/console.log (str "From Arduino: " val))
+            (recur))))
       (ws/close stream)))
 
 ; (def ctx (-> js/document
