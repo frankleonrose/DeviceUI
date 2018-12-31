@@ -6,6 +6,7 @@
 #include <cstdlib>
 // #include <functional>
 #include <iostream>
+#include <vector>
 
 MockSerial Serial;
 MockSerial Serial1;
@@ -26,11 +27,15 @@ unsigned long millis() {
 };
 uint32_t micros() {
   auto end = std::chrono::steady_clock::now();
-  auto int_us = std::chrono::duration_cast<std::chrono::micros>(end-start);
+  auto int_us = std::chrono::duration_cast<std::chrono::microseconds>(end-start);
   return static_cast<unsigned long>(0xFFFFFFFF & int_us.count()); // Just lowest 32 bits
 };
 void interrupts() {};
 void noInterrupts() {};
+
+const int nPins = 120;
+std::vector<int> pinValues(nPins, 0);
+std::vector<uint8_t> pinModes(nPins, INPUT);
 
 void pinMode(uint8_t pin, uint8_t mode) {
   std::string mode_string;
@@ -45,11 +50,19 @@ void pinMode(uint8_t pin, uint8_t mode) {
 void digitalWrite(uint8_t pin, uint8_t val) {
   std::string json = "{\"op\":\"digitalWrite\",\"pin\":" + std::to_string(pin) + ",\"value\":\"" + std::to_string(val) + "\"}";
   send_to_ui(json);
+  if (pinModes[pin]==INPUT) {
+    std::cerr << "Writing to INPUT pin " << pin << std::endl;
+  }
 };
+void set_pin_state(int pin, int value) {
+  pinValues[pin] = value;
+}
 int digitalRead(uint8_t pin) {
-  return false; // TODO
+  return pinValues[pin]==0 ? 0 : 1;
 };
-int analogRead(uint8_t pin) { return 0; }
+int analogRead(uint8_t pin) {
+  return pinValues[pin];
+}
 void analogReadResolution(int) {}
 
 long nativeRandom(long max) {

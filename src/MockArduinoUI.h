@@ -4,6 +4,9 @@
 #pragma once
 
 void send_to_ui(std::string message);
+
+void set_pin_state(int pin, int value);
+
 void setup(void);
 void loop(void);
 

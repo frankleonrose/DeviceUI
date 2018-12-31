@@ -3,26 +3,30 @@
   (:require [goog.dom :as gdom]
             [reagent.core :as r]
             [rc-slider]
-            [cljs.core.async :as a :refer [<! >! alts!]]
+            [cljs.core.async :as a :refer [<! >! alts! put!]]
             [haslett.client :as ws]
             [haslett.format :as fmt]))
 
 (def slider (r/adapt-react-class rc-slider))
 
-(defn simple-component []
+(defn send_slider [sink-chan pin value]
+  (put! sink-chan (str "{\"op\":\"pinState\",\"pin\":" pin ",\"value\":" value "}")))
+
+(defn simple-component [sink-chan]
   [:div
-   [slider] ; :value val, :onChange fn, :min, :max, :step, https://github.com/react-component/slider
-   [:p "I am a component!"]
+   [:label "Power: "]
+   [slider {:min 0 :max 5000 :step 100 :onChange (partial send_slider sink-chan 101)}] ; :value val, :onChange fn, :min, :max, :step, https://github.com/react-component/slider
    [:p.someclass
     "I have " [:strong "bold"]
     [:span {:style {:color "red"}} " and red "] "text."]])
 
-(r/render [simple-component] (gdom/getElement "app"))
 
 (go (let [stream (<! (ws/connect "ws://0.0.0.0:4000"))
           close-chan (:close-status stream)
+          sink-chan (:sink stream)
           source-chan (:source stream)]
-      (>! (:sink stream) "{\"op\":\"init\"}")
+      (>! sink-chan "{\"op\":\"init\"}")
+      (r/render [simple-component sink-chan] (gdom/getElement "app"))
       (loop []
         (let [[val port] (alts! [source-chan close-chan])]
           (when (= port source-chan)
