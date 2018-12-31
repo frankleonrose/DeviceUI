@@ -9,6 +9,25 @@
 
 (def slider (r/adapt-react-class rc-slider))
 
+(defn digital-input
+  ([sink-chan pin]
+   (digital-input sink-chan pin 0))
+  ([sink-chan pin start-value]
+   (js/console.log (str "Digital input: " sink-chan ", " pin ", " start-value))
+   (let [current-value (r/atom start-value)]
+     (fn []
+      [:div
+        "The atom " [:code "current-value"] " has value: " @current-value ". "
+        [:input {:type "button" :value "Toggle"
+                 :on-click (fn [evt]
+                            ; (js/console.log (str "Swapping value: " @current-value))
+                            (swap! current-value (fn [x] (- 1 x)))
+                            (if (not (put! sink-chan 
+                                           (str "{\"op\":\"pinState\",\"pin\":" pin
+                                            ",\"value\":" @current-value "}")
+                                           #(js/console.log (str "put! to sink-chan " %))))
+                              (js/console.log "sink-chan is closed!")))}]]))))
+
 (defn send_slider [sink-chan pin value]
   (put! sink-chan (str "{\"op\":\"pinState\",\"pin\":" pin ",\"value\":" value "}")))
 
@@ -16,6 +35,8 @@
   [:div
    [:label "Power: "]
    [slider {:min 0 :max 5000 :step 100 :onChange (partial send_slider sink-chan 101)}] ; :value val, :onChange fn, :min, :max, :step, https://github.com/react-component/slider
+   [:label "Nothing: "]
+   [digital-input sink-chan 13 1]
    [:p.someclass
     "I have " [:strong "bold"]
     [:span {:style {:color "red"}} " and red "] "text."]])
