@@ -48,7 +48,7 @@ void pinMode(uint8_t pin, uint8_t mode) {
   send_to_ui(json);
 };
 void digitalWrite(uint8_t pin, uint8_t val) {
-  std::string json = "{\"op\":\"digitalWrite\",\"pin\":" + std::to_string(pin) + ",\"value\":\"" + std::to_string(val) + "\"}";
+  std::string json = "{\"op\":\"digitalWrite\",\"pin\":" + std::to_string(pin) + ",\"value\":" + std::to_string(val) + "}";
   send_to_ui(json);
   if (pinModes[pin]==INPUT) {
     std::cerr << "Writing to INPUT pin " << pin << std::endl;
