@@ -39,21 +39,22 @@
 (defn simple-component [sink-chan]
   (fn []
     [:div
-      [:label "Power: "]
-      [slider {:min 0 :max 5000 :step 100 :onChange (partial send_slider sink-chan 101)}] ; :value val, :onChange fn, :min, :max, :step, https://github.com/react-component/slider
-      [:label "Open: "]
-      [slider {:min 0 :max 2000 :step 100 :onChange (partial send_slider sink-chan 100)}] ; :value val, :onChange fn, :min, :max, :step, https://github.com/react-component/slider
-      [:label "Nothing: "]
+      [:label "Power sensor: "]
+      [slider {:min 0 :max 5000 :step 500 :onChange (partial send_slider sink-chan 101)}] ; :value val, :onChange fn, :min, :max, :step, https://github.com/react-component/slider
+      [:label "Open sensor: "]
+      [slider {:min 0 :max 2000 :step 500 :onChange (partial send_slider sink-chan 100)}] ; :value val, :onChange fn, :min, :max, :step, https://github.com/react-component/slider
       [digital-input sink-chan 13 1]
-      [light-strip]
-      [:p.someclass
-        "I have " [:strong "bold"]
-        [:span {:style {:color "red"}} " and red "] "text."]]))
+      [:label "Light Strip: "]
+      [light-strip]]))
+      ; [:p.someclass
+      ;   "I have " [:strong "bold"]
+      ;   [:span {:style {:color "red"}} " and red "] "text."]]))
 
 (defn handle-op [op]
-  (js/console.log "From Arduino: " (clj->js op))
+  ; (js/console.log "From Arduino: " (clj->js op))
   (when (:light-strip op)
-    ; (js/console.log "Assigning: " (:light-strip op))
+    ; (if (not= (:light-strip op) (:light-strip @state))
+    ;   (js/console.log "New light-strip: " (clj->js (:light-strip op))))
     (swap! state assoc :light-strip (:light-strip op))))
   
 (defn clj->json [clj]
