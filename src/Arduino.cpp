@@ -38,6 +38,8 @@ std::vector<int> pinValues(nPins, 0);
 std::vector<uint8_t> pinModes(nPins, INPUT);
 
 void pinMode(uint8_t pin, uint8_t mode) {
+  pinModes[pin] = mode;
+
   std::string mode_string;
   switch (mode) {
     case INPUT: mode_string = "input"; break;
@@ -48,10 +50,12 @@ void pinMode(uint8_t pin, uint8_t mode) {
   send_to_ui(json);
 };
 void digitalWrite(uint8_t pin, uint8_t val) {
+  set_pin_state(pin, val);
+
   std::string json = "{\"op\":\"digitalWrite\",\"pin\":" + std::to_string(pin) + ",\"value\":" + std::to_string(val) + "}";
   send_to_ui(json);
   if (pinModes[pin]==INPUT) {
-    std::cerr << "Writing to INPUT pin " << pin << std::endl;
+    std::cerr << "Error: digitalWrite to INPUT pin (" << ((int)pin) << ")!" << std::endl;
   }
 };
 void set_pin_state(int pin, int value) {
