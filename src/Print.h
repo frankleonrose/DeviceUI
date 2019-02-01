@@ -27,6 +27,7 @@
 
 // #include "WString.h"
 // #include "Printable.h"
+#include <stdarg.h>
 
 #define DEC 10
 #define HEX 16
@@ -71,6 +72,18 @@ class Print
 
     // size_t print(const __FlashStringHelper *);
     // size_t print(const String &);
+    size_t printf(const char *format, ...) {
+      char buffer[2000];
+      va_list args;
+      va_start(args, format);
+      int size = vsnprintf(buffer, sizeof(buffer), format, args);
+      if (size>0) {
+        write(buffer, size);
+      }
+      va_end(args);
+      return size>0 ? size : 0;
+    }
+
     size_t print(const char[]);
     size_t print(char);
     size_t print(unsigned char, int = DEC);
