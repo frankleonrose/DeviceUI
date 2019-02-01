@@ -55,7 +55,7 @@
   (when (:light-strip op)
     ; (if (not= (:light-strip op) (:light-strip @state))
     ;   (js/console.log "New light-strip: " (clj->js (:light-strip op))))
-    (swap! state assoc :light-strip (:light-strip op))))
+    (swap! state assoc :light-strip (:light-strip op)))
   (when (:serial op)
     (js/console.log "Serial: " (clj->js (:serial op)))))
   
