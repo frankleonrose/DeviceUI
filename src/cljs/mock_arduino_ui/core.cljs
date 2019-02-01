@@ -74,6 +74,8 @@
       (r/render [simple-component send-chan] (gdom/getElement "app"))
       (loop []
         (let [[val port] (alts! [receive-chan close-chan])]
+          (when (= port close-chan)
+            (js/console.log "Channel closed with val: " (clj->js val)))
           (when (= port receive-chan)
             (handle-op val)
             (recur))))
