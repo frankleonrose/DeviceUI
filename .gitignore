@@ -1,0 +1,5 @@
+commands.txt
+node_modules
+dist
+.cpcache/
+out/
