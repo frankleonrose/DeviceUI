@@ -1,0 +1,81 @@
+{
+  "name": "DeviceUI",
+  "keywords": "device, Arduino, testing, UI, simulator, debug",
+  "description": "DeviceUI is a device simulation that links into your device code and runs in the browser.",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/frankleonrose/DeviceUI"
+  },
+  "authors":
+  [
+    {
+      "name": "Frank Leon Rose",
+      "email": "frankleonrose@gmail.com",
+      "maintainer": true
+    }
+  ],
+  "dependencies":
+  [
+    {
+      "name": "Arduino Logging Library",
+      "version": "https://github.com/frankleonrose/Arduino-logging-library",
+      "authors": ["Bernd Klein <berndklein@gmx.de>", "Frank Leon Rose <frankleonrose@gmail.com>"]
+    }
+    {
+      "version": "https://github.com/boostorg/config"
+    },
+    {
+      "version": "https://github.com/boostorg/asio"
+    },
+    {
+      "version": "https://github.com/boostorg/beast"
+    },
+    {
+      "version": "https://github.com/boostorg/core"
+    },
+    {
+      "version": "https://github.com/boostorg/container_hash"
+    },
+    {
+      "version": "https://github.com/boostorg/endian"
+    },
+    {
+      "version": "https://github.com/boostorg/align"
+    },
+    {
+      "version": "https://github.com/boostorg/mp11"
+    },
+    {
+      "version": "https://github.com/boostorg/utility"
+    },
+    {
+      "version": "https://github.com/boostorg/type_traits"
+    },
+    {
+      "version": "https://github.com/boostorg/optional"
+    },
+    {
+      "version": "https://github.com/boostorg/smart_ptr"
+    },
+    {
+      "version": "https://github.com/boostorg/system"
+    },
+    {
+      "version": "https://github.com/boostorg/predef"
+    },
+    {
+      "version": "https://github.com/nlohmann/json"
+    }
+  ],
+  "export": {
+    "include":
+    [
+        "src/*",
+        "examples/*"
+    ]
+  },
+  "version": "0.1.0",
+  "frameworks": "arduino",
+  "platforms": "native"
+}
